@@ -1,0 +1,26 @@
+**`k.contrast [percent]`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ modifies the contrast of the image.
+**`k.saturation [percent]`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ modifies the saturation of the image.
+**`k.sharpen [ammount]`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ sharpens the image.
+**`k.bright [percent]`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ adjusts the brightness of the image.
+**`k.hue [0-360]`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ changes the hue of the image.
+**`k.rotate [0-360]`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ rotates the image a number of degrees.
+**`k.bw`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ converts the image to grayscale.
+**`k.i`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ inverts the colors of the image.
+**`k.fuzz [ammount]`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ adds chroma fuzz to the image.
+**`k.hooh`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ Mirrors lower half of image across the x-axis.
+**`k.haah`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ Mirrors left half of image across the y-axis.
+**`k.woow`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ Mirrors upper half of image across the x-axis.
+**`k.waaw`**
+​ ​ ​ ​ ​ ​ ​ ​ ​ Mirrors right half of image across the y-axis.
