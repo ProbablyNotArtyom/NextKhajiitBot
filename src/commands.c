@@ -41,11 +41,9 @@
 
 // ----------------------------------------------------------------------------------------------------
 
-enum {
-	EIGHTBALL_RESPONSE_POSITIVE,
-	EIGHTBALL_RESPONSE_NEUTRAL,
-	EIGHTBALL_RESPONSE_NEGATIVE
-};
+#define EIGHTBALL_RESPONSE_POSITIVE		0x11ff5c
+#define EIGHTBALL_RESPONSE_NEGATIVE		0xff2600
+#define EIGHTBALL_RESPONSE_NEUTRAL		0xff9602
 
 struct eightball_entry {
 	const char *response;
@@ -53,72 +51,35 @@ struct eightball_entry {
 };
 
 struct eightball_entry eightball_phrases[] = {	// list of 8ball phrases/responses
-	{ .response = "It is certain.", .type = EIGHTBALL_RESPONSE_POSITIVE },
-	{ .response = "It is decidedly so.", .type = EIGHTBALL_RESPONSE_POSITIVE },
-	{ .response = "Without a doubt.", .type = EIGHTBALL_RESPONSE_POSITIVE },
-	{ .response = "Yes definitely.", .type = EIGHTBALL_RESPONSE_POSITIVE },
-	{ .response = "You may rely on it.", .type = EIGHTBALL_RESPONSE_POSITIVE },
-	{ .response = "As I see it, yes.", .type = EIGHTBALL_RESPONSE_POSITIVE },
-	{ .response = "Most likelby.", .type = EIGHTBALL_RESPONSE_POSITIVE },
-	{ .response = "Outlook good.", .type = EIGHTBALL_RESPONSE_POSITIVE },
-	{ .response = "Yes.", .type = EIGHTBALL_RESPONSE_POSITIVE },
-	{ .response = "Signs Point to Yes.", .type = EIGHTBALL_RESPONSE_POSITIVE },
-	{ .response = "Reply hazy, try again.", .type = EIGHTBALL_RESPONSE_NEUTRAL },
-	{ .response = "Ask again later.", .type = EIGHTBALL_RESPONSE_NEUTRAL },
-	{ .response = "Better not tell you now.", .type = EIGHTBALL_RESPONSE_NEUTRAL },
-	{ .response = "Cannot predict now.", .type = EIGHTBALL_RESPONSE_NEUTRAL },
-	{ .response = "Concentrate and ask again.", .type = EIGHTBALL_RESPONSE_NEUTRAL },
-	{ .response = "Don't count on it.", .type = EIGHTBALL_RESPONSE_NEGATIVE },
-	{ .response = "My reply is no.", .type = EIGHTBALL_RESPONSE_NEGATIVE },
-	{ .response = "My sources say no.", .type = EIGHTBALL_RESPONSE_NEGATIVE },
-	{ .response = "Outlook not so good.", .type = EIGHTBALL_RESPONSE_NEGATIVE },
-	{ .response = "Very doubtful.", .type = EIGHTBALL_RESPONSE_NEGATIVE }
+	{ "It is certain.", EIGHTBALL_RESPONSE_POSITIVE },
+	{ "It is decidedly so.", EIGHTBALL_RESPONSE_POSITIVE },
+	{ "Without a doubt.", EIGHTBALL_RESPONSE_POSITIVE },
+	{ "Yes definitely.", EIGHTBALL_RESPONSE_POSITIVE },
+	{ "You may rely on it.", EIGHTBALL_RESPONSE_POSITIVE },
+	{ "As I see it, yes.", EIGHTBALL_RESPONSE_POSITIVE },
+	{ "Most likelby.", EIGHTBALL_RESPONSE_POSITIVE },
+	{ "Outlook good.", EIGHTBALL_RESPONSE_POSITIVE },
+	{ "Yes.", EIGHTBALL_RESPONSE_POSITIVE },
+	{ "Signs Point to Yes.", EIGHTBALL_RESPONSE_POSITIVE },
+	{ "Reply hazy, try again.", EIGHTBALL_RESPONSE_NEUTRAL },
+	{ "Ask again later.", EIGHTBALL_RESPONSE_NEUTRAL },
+	{ "Better not tell you now.", EIGHTBALL_RESPONSE_NEUTRAL },
+	{ "Cannot predict now.", EIGHTBALL_RESPONSE_NEUTRAL },
+	{ "Concentrate and ask again.", EIGHTBALL_RESPONSE_NEUTRAL },
+	{ "Don't count on it.", EIGHTBALL_RESPONSE_NEGATIVE },
+	{ "My reply is no.", EIGHTBALL_RESPONSE_NEGATIVE },
+	{ "My sources say no.", EIGHTBALL_RESPONSE_NEGATIVE },
+	{ "Outlook not so good.", EIGHTBALL_RESPONSE_NEGATIVE },
+	{ "Very doubtful.", EIGHTBALL_RESPONSE_NEGATIVE }
 };
 
 void eight_ball(struct discord *client, const struct discord_message *msg) {
 	if (msg->author->bot) return;	// ignore bots	
-	char *phrases[] = {	// list of 8ball phrases/responses
-		"It is certain.",
-		"It is decidedly so.",
-		"Without a doubt.",
-		"Yes definitely.",
-		"You may rely on it.",
-		"As I see it, yes.",
-		"Most likely.",
-		"Outlook good.",
-		"Yes.",
-		"Signs Point to Yes.",
-		"Reply hazy, try again.",
-		"Ask again later.",
-		"Better not tell you now.",
-		"Cannot predict now.",
-		"Concentrate and ask again.",
-		"Don't count on it.",
-		"My reply is no.",
-		"My sources say no.",
-		"Outlook not so good.",
-		"Very doubtful."
-	};
-	
 	srand(time(0));					// generate seed for randomizer
-	int answer = rand() % (sizeof(phrases) / sizeof(phrases[0]));	// random number from 0 - 20
-	int color;
-	switch (eightball_phrases[answer].type) {
-		case EIGHTBALL_RESPONSE_POSITIVE:
-			color = KBCOLOR_TRUE;
-			break;
-		case EIGHTBALL_RESPONSE_NEUTRAL:
-			color = KBCOLOR_UNDETERMINED;
-			break;
-		case EIGHTBALL_RESPONSE_NEGATIVE:
-			color = KBCOLOR_FALSE;
-			break;
-	}
-	
-	struct discord_embed embeds[] = { // simple embed message
+	int answer = rand() % (sizeof(eightball_phrases) / sizeof(eightball_phrases[0]));	// random number from 0 - 20
+	struct discord_embed embeds[] = {
 		{
-			.color = color,
-			.title = "8-Ball",
+			.color = eightball_phrases[answer].type,
 			.description = eightball_phrases[answer].response
 		}		
 	};
@@ -127,8 +88,10 @@ void eight_ball(struct discord *client, const struct discord_message *msg) {
 		.embeds = &(struct discord_embeds) {
 			.size = sizeof(embeds) / sizeof *embeds,
 			.array = embeds,
-		},
+		}
 	};
-	discord_create_message(client, msg->channel_id, &params, NULL);
 	
+	discord_create_message(client, msg->channel_id, &params, NULL);	
 } 
+
+// ----------------------------------------------------------------------------------------------------
