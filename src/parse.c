@@ -27,30 +27,48 @@
 // A new rendition of khajiitbot in C using the Concord discord library
 // ====================================================================================================
 
-#ifndef _KBOT_H
-#define _KBOT_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <unistd.h>
+#include <assert.h>
+#include <limits.h>
+#include <errno.h>
+#include <inttypes.h> /* SCNu64 */
+
+#include <concord/discord.h>
+
+#include "khajiitbot.h"
+#include "commands.h"
 
 // ----------------------------------------------------------------------------------------------------
 
-#define KBOT_PREFIX		"k."
-
-
-#define KBCOLOR_MSG		0xf5367c					// the default embed color used by bot embeds
-#define KBCOLOR_ERROR	0xe62f2f					// the embed color used for error messages
-
-#define KBCOLOR_TRUE			0x11ff5c
-#define KBCOLOR_FALSE			0xff2600
-#define KBCOLOR_UNDETERMINED	0xff9602
-
-
-#define STR_ARRAY_LEN(a)	(sizeof(a) / sizeof(*a))
-
-// ----------------------------------------------------------------------------------------------------
-
-void handle_action(struct discord *client, const struct discord_message *msg,
-	const char *response_self[], int response_self_len,
-	const char *response[], int response_len);
-
-// ----------------------------------------------------------------------------------------------------
-
-#endif
+// Finds any @ mentions of users within a message string and returns the ID
+// If the returned ID is 0, then no mention was found
+// always returns the first mention in the message is multiple are present
+u64snowflake find_mention(struct discord *client, const struct discord_message *msg) {
+	int index = 0;
+	u64snowflake ret = 0;
+	char *newstr = (char *)malloc(strlen(msg->content) + 1);
+	char *newstr_orig = newstr;
+	bool valid = false;
+	strcpy(newstr, msg->content);
+	for (int i = 0; newstr[i] != '\0'; i++) {
+		if (newstr[i] == '<' && newstr[i+1] == '@') {
+			index = i + 2;
+			newstr = &newstr[index];
+			for (int x = 0; newstr[x] != '\0'; x++) {
+				if (newstr[x] == '>') {
+					newstr[x] = '\0';
+					break;
+				}
+			}
+			ret = (u64snowflake)strtol(newstr, NULL, 10);
+		}
+	}
+	printf("newstr: %s\n", newstr);
+	printf("ret: %" PRIu64 "\n", ret);
+	free(newstr_orig);
+	return ret;
+}

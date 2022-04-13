@@ -27,30 +27,44 @@
 // A new rendition of khajiitbot in C using the Concord discord library
 // ====================================================================================================
 
-#ifndef _KBOT_H
-#define _KBOT_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <unistd.h>
+#include <assert.h>
+#include <limits.h>
+#include <errno.h>
+
+#include <concord/discord.h>
+
+#include <khajiitbot.h>
+#include <commands.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-#define KBOT_PREFIX		"k."
+const static char *nuke_response_self[] = {
+	"nukes themselves!",
+	"manages to drop their nuke on their own head! Bye bye...",
+	"nukes themselves, for some reason."
+};
 
-
-#define KBCOLOR_MSG		0xf5367c					// the default embed color used by bot embeds
-#define KBCOLOR_ERROR	0xe62f2f					// the embed color used for error messages
-
-#define KBCOLOR_TRUE			0x11ff5c
-#define KBCOLOR_FALSE			0xff2600
-#define KBCOLOR_UNDETERMINED	0xff9602
-
-
-#define STR_ARRAY_LEN(a)	(sizeof(a) / sizeof(*a))
+const static char *nuke_response[] = {
+	"unleashes the hellfire of a thousand suns onto **%s**!",
+	"nukes the fuck out of **%s**!",
+	"drops a fat man on **%s**!",
+	"turns **%s** into the next fallout game!",
+	"nukes **%s**!",
+	"straight up nukes **%s**!",
+	"consigns **%s** to total nuclear annihilation!",
+	"made **%s** wish for a nuclear winter.",
+	"turned **%s** into the next Bikini Atoll!"
+};
 
 // ----------------------------------------------------------------------------------------------------
 
-void handle_action(struct discord *client, const struct discord_message *msg,
-	const char *response_self[], int response_self_len,
-	const char *response[], int response_len);
-
-// ----------------------------------------------------------------------------------------------------
-
-#endif
+void action_nuke(struct discord *client, const struct discord_message *msg) {
+	if (msg->author->bot) return;	// ignore bots
+	handle_action(client, msg, nuke_response_self, STR_ARRAY_LEN(nuke_response_self),
+		nuke_response, STR_ARRAY_LEN(nuke_response));
+}

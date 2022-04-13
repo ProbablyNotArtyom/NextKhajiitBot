@@ -37,6 +37,20 @@
 
 void eight_ball(struct discord *client, const struct discord_message *msg);
 
+void action_bless(struct discord *client, const struct discord_message *msg);
+void action_boof(struct discord *client, const struct discord_message *msg);
+void action_grope(struct discord *client, const struct discord_message *msg);
+void action_hug(struct discord *client, const struct discord_message *msg);
+void action_kiss(struct discord *client, const struct discord_message *msg);
+void action_meow(struct discord *client, const struct discord_message *msg);
+void action_nuke(struct discord *client, const struct discord_message *msg);
+void action_pet(struct discord *client, const struct discord_message *msg);
+void action_respects(struct discord *client, const struct discord_message *msg);
+void action_shoot(struct discord *client, const struct discord_message *msg);
+void action_stab(struct discord *client, const struct discord_message *msg);
+void action_vore(struct discord *client, const struct discord_message *msg);
+void action_yiff(struct discord *client, const struct discord_message *msg);
+
 // ----------------------------------------------------------------------------------------------------
 
 #endif

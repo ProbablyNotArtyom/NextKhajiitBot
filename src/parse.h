@@ -27,29 +27,15 @@
 // A new rendition of khajiitbot in C using the Concord discord library
 // ====================================================================================================
 
-#ifndef _KBOT_H
-#define _KBOT_H
+#ifndef _KBOT_PARSE_H
+#define _KBOT_PARSE_H
+
+#include <inttypes.h> /* SCNu64 */
+#include <concord/discord.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-#define KBOT_PREFIX		"k."
-
-
-#define KBCOLOR_MSG		0xf5367c					// the default embed color used by bot embeds
-#define KBCOLOR_ERROR	0xe62f2f					// the embed color used for error messages
-
-#define KBCOLOR_TRUE			0x11ff5c
-#define KBCOLOR_FALSE			0xff2600
-#define KBCOLOR_UNDETERMINED	0xff9602
-
-
-#define STR_ARRAY_LEN(a)	(sizeof(a) / sizeof(*a))
-
-// ----------------------------------------------------------------------------------------------------
-
-void handle_action(struct discord *client, const struct discord_message *msg,
-	const char *response_self[], int response_self_len,
-	const char *response[], int response_len);
+u64snowflake find_mention(struct discord *client, const struct discord_message *msg);
 
 // ----------------------------------------------------------------------------------------------------
 

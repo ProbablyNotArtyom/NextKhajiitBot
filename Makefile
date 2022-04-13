@@ -30,8 +30,8 @@ LIBS = -lpthread -ldiscord -lcurl
 SOURCES := $(shell find ./src -name '*.c')
 OBJECTS := $(foreach tmp, $(SOURCES:%.c=%.o), $(OBJDIR)/$(tmp))
 
-CFLAGS := -w $(LIBS)
-LDFLAGS := -L/usr/lib -fwhole-program $(LIBS)
+CFLAGS := -w $(LIBS) -I $(SRCDIR)
+LDFLAGS := -L /usr/lib -fwhole-program $(LIBS)
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -45,7 +45,7 @@ all: $(OBJECTS) $(BINARY_NAME)
 $(BINARY_NAME): $(OBJECTS)
 	@echo "[LD] Creating final binary"
 	@mkdir -p $(BINDIR)
-	$(CC) $(shell find $(OBJDIR) -name '*.o') $(LDFLAGS) -o $(BINDIR)/$@ 
+	$(CC) $(shell find $(OBJDIR) -name '*.o') $(LDFLAGS) -o $(BINDIR)/$@
 
 $(OBJECTS): $$(patsubst $$(OBJDIR)%.o, $$(BASEDIR)%.c, $$@)
 	@echo "[CC] -c $(shell realpath -m --relative-to=$(PWD) $(patsubst $(OBJDIR)%, $(BASEDIR)%, $(@:%.o=%.c))) -o $(shell realpath -m --relative-to=$(PWD) $(@))"
@@ -57,6 +57,6 @@ $(OBJECTS): $$(patsubst $$(OBJDIR)%.o, $$(BASEDIR)%.c, $$@)
 clean:
 	rm $(OBJDIR) -vfr
 	rm $(BINDIR) -vfr
-	
+
 run:
 	cd $(BINDIR) && ./$(BINARY_NAME)

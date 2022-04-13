@@ -27,30 +27,44 @@
 // A new rendition of khajiitbot in C using the Concord discord library
 // ====================================================================================================
 
-#ifndef _KBOT_H
-#define _KBOT_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <unistd.h>
+#include <assert.h>
+#include <limits.h>
+#include <errno.h>
+
+#include <concord/discord.h>
+
+#include <khajiitbot.h>
+#include <commands.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-#define KBOT_PREFIX		"k."
+const static char *vore_response_self[] = {
+	"manages to vore themselves. Impressive!",
+	"vores himself?",
+	"chows down on his own arm!"
+};
 
-
-#define KBCOLOR_MSG		0xf5367c					// the default embed color used by bot embeds
-#define KBCOLOR_ERROR	0xe62f2f					// the embed color used for error messages
-
-#define KBCOLOR_TRUE			0x11ff5c
-#define KBCOLOR_FALSE			0xff2600
-#define KBCOLOR_UNDETERMINED	0xff9602
-
-
-#define STR_ARRAY_LEN(a)	(sizeof(a) / sizeof(*a))
+const static char *vore_response[] = {
+	"vores **%s**!",
+	"glomps **%s** with their big wide mouth!",
+	"glomps **%s** with their big wide mouth!",
+	"attempts to vore **%s**! Unfortunately that's an impossible task and all they did was get **%s**'s arm wet.",
+	"starts devouring **%s**'s ass.",
+	"starts devouring **%s**'s ass.",
+	"frikin murders **%s** and eats the remains.",
+	"vores **%s**. \\*burp\\*.",
+	"swallows **%s** in one gulp! They were never seen again."
+};
 
 // ----------------------------------------------------------------------------------------------------
 
-void handle_action(struct discord *client, const struct discord_message *msg,
-	const char *response_self[], int response_self_len,
-	const char *response[], int response_len);
-
-// ----------------------------------------------------------------------------------------------------
-
-#endif
+void action_vore(struct discord *client, const struct discord_message *msg) {
+	if (msg->author->bot) return;	// ignore bots
+	handle_action(client, msg, vore_response_self, STR_ARRAY_LEN(vore_response_self),
+		vore_response, STR_ARRAY_LEN(vore_response));
+}

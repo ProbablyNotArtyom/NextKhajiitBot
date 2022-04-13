@@ -27,30 +27,40 @@
 // A new rendition of khajiitbot in C using the Concord discord library
 // ====================================================================================================
 
-#ifndef _KBOT_H
-#define _KBOT_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <unistd.h>
+#include <assert.h>
+#include <limits.h>
+#include <errno.h>
+
+#include <concord/discord.h>
+
+#include <khajiitbot.h>
+#include <commands.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-#define KBOT_PREFIX		"k."
+const static char *boof_response_self[] = {
+	"rips da boof hella hard",
+	"smonks da boof :)",
+	"gets da boof passed to them. yap"
+};
 
-
-#define KBCOLOR_MSG		0xf5367c					// the default embed color used by bot embeds
-#define KBCOLOR_ERROR	0xe62f2f					// the embed color used for error messages
-
-#define KBCOLOR_TRUE			0x11ff5c
-#define KBCOLOR_FALSE			0xff2600
-#define KBCOLOR_UNDETERMINED	0xff9602
-
-
-#define STR_ARRAY_LEN(a)	(sizeof(a) / sizeof(*a))
-
-// ----------------------------------------------------------------------------------------------------
-
-void handle_action(struct discord *client, const struct discord_message *msg,
-	const char *response_self[], int response_self_len,
-	const char *response[], int response_len);
+const static char *boof_response[] = {
+	"passes da boof to **%s**",
+	"drops da boof while passing it to **%s**. :(",
+	"gives da boof to **%s**",
+	"rips da boof with **%s**",
+	"shares da boof with **%s**"
+};
 
 // ----------------------------------------------------------------------------------------------------
 
-#endif
+void action_boof(struct discord *client, const struct discord_message *msg) {
+	if (msg->author->bot) return;	// ignore bots
+	handle_action(client, msg, boof_response_self, STR_ARRAY_LEN(boof_response_self),
+		boof_response, STR_ARRAY_LEN(boof_response));
+}

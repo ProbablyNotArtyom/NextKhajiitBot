@@ -27,30 +27,42 @@
 // A new rendition of khajiitbot in C using the Concord discord library
 // ====================================================================================================
 
-#ifndef _KBOT_H
-#define _KBOT_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <unistd.h>
+#include <assert.h>
+#include <limits.h>
+#include <errno.h>
+#include <inttypes.h>
+
+#include <concord/discord.h>
+
+#include <khajiitbot.h>
+#include <commands.h>
+#include <parse.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-#define KBOT_PREFIX		"k."
+const static char *bless_response_self[] = {
+	"blesses themselves!",
+	"appempts to bless themselves. Unfortunately, thats not how that works.",
+	"blesses themselves, placing a blessed_curse."
+};
 
-
-#define KBCOLOR_MSG		0xf5367c					// the default embed color used by bot embeds
-#define KBCOLOR_ERROR	0xe62f2f					// the embed color used for error messages
-
-#define KBCOLOR_TRUE			0x11ff5c
-#define KBCOLOR_FALSE			0xff2600
-#define KBCOLOR_UNDETERMINED	0xff9602
-
-
-#define STR_ARRAY_LEN(a)	(sizeof(a) / sizeof(*a))
-
-// ----------------------------------------------------------------------------------------------------
-
-void handle_action(struct discord *client, const struct discord_message *msg,
-	const char *response_self[], int response_self_len,
-	const char *response[], int response_len);
+const static char *bless_response[] = {
+	"blesses **%s**!",
+	"gives bless to **%s**!",
+	"grants blessed_bless to **%s**!",
+	"accidentally curses **%s**! I can't believe you've done this.",
+	"declares **%s**  a truly blessed entity!"
+};
 
 // ----------------------------------------------------------------------------------------------------
 
-#endif
+void action_bless(struct discord *client, const struct discord_message *msg) {
+	if (msg->author->bot) return;	// ignore bots
+	handle_action(client, msg, bless_response_self, STR_ARRAY_LEN(bless_response_self),
+		bless_response, STR_ARRAY_LEN(bless_response));
+}

@@ -27,30 +27,44 @@
 // A new rendition of khajiitbot in C using the Concord discord library
 // ====================================================================================================
 
-#ifndef _KBOT_H
-#define _KBOT_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <unistd.h>
+#include <assert.h>
+#include <limits.h>
+#include <errno.h>
+
+#include <concord/discord.h>
+
+#include <khajiitbot.h>
+#include <commands.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-#define KBOT_PREFIX		"k."
+const static char *stab_response_self[] = {
+	"stabs themselves. I dont know what they expected...",
+	"gets into a knife fight! They manage to end up with their own knife in their gut.",
+	"stabs themselves with a spoon. It isn't very effective..."
+};
 
-
-#define KBCOLOR_MSG		0xf5367c					// the default embed color used by bot embeds
-#define KBCOLOR_ERROR	0xe62f2f					// the embed color used for error messages
-
-#define KBCOLOR_TRUE			0x11ff5c
-#define KBCOLOR_FALSE			0xff2600
-#define KBCOLOR_UNDETERMINED	0xff9602
-
-
-#define STR_ARRAY_LEN(a)	(sizeof(a) / sizeof(*a))
+const static char *stab_response[] = {
+	"stabs **%s** right in the gut!",
+	"sneaks up behind **%s** and stabs them in the back!",
+	"gets into a knife fight with **%s**!",
+	"gets cheeky with **%s**!",
+	"stabs **%s** in an attempt to steal their yiff! :scream_cat:",
+	"lodges their blade directly into **%s**!",
+	"tries to stab **%s**, but ends up grabbing their own knife by the blade.",
+	"gives **%s** a friendly little eyepoke! Retina jelly, anyone?",
+	"exercises their green thumb and plants a few knives into **%s**'s back!"
+};
 
 // ----------------------------------------------------------------------------------------------------
 
-void handle_action(struct discord *client, const struct discord_message *msg,
-	const char *response_self[], int response_self_len,
-	const char *response[], int response_len);
-
-// ----------------------------------------------------------------------------------------------------
-
-#endif
+void action_stab(struct discord *client, const struct discord_message *msg) {
+	if (msg->author->bot) return;	// ignore bots
+	handle_action(client, msg, stab_response_self, STR_ARRAY_LEN(stab_response_self),
+		stab_response, STR_ARRAY_LEN(stab_response));
+}

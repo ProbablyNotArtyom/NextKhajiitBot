@@ -50,7 +50,7 @@ struct eightball_entry {
 	const int type;
 };
 
-struct eightball_entry eightball_phrases[] = {	// list of 8ball phrases/responses
+const struct eightball_entry eightball_phrases[] = {	// list of 8ball phrases/responses
 	{ "It is certain.", EIGHTBALL_RESPONSE_POSITIVE },
 	{ "It is decidedly so.", EIGHTBALL_RESPONSE_POSITIVE },
 	{ "Without a doubt.", EIGHTBALL_RESPONSE_POSITIVE },
@@ -74,24 +74,24 @@ struct eightball_entry eightball_phrases[] = {	// list of 8ball phrases/response
 };
 
 void eight_ball(struct discord *client, const struct discord_message *msg) {
-	if (msg->author->bot) return;	// ignore bots	
+	if (msg->author->bot) return;	// ignore bots
 	srand(time(0));					// generate seed for randomizer
 	int answer = rand() % (sizeof(eightball_phrases) / sizeof(eightball_phrases[0]));	// random number from 0 - 20
 	struct discord_embed embeds[] = {
 		{
 			.color = eightball_phrases[answer].type,
 			.description = eightball_phrases[answer].response
-		}		
+		}
 	};
-	
+
 	struct discord_create_message params = {
 		.embeds = &(struct discord_embeds) {
 			.size = sizeof(embeds) / sizeof *embeds,
 			.array = embeds,
 		}
 	};
-	
-	discord_create_message(client, msg->channel_id, &params, NULL);	
-} 
+
+	discord_create_message(client, msg->channel_id, &params, NULL);
+}
 
 // ----------------------------------------------------------------------------------------------------

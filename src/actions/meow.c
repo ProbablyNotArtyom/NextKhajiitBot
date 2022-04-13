@@ -27,30 +27,39 @@
 // A new rendition of khajiitbot in C using the Concord discord library
 // ====================================================================================================
 
-#ifndef _KBOT_H
-#define _KBOT_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <unistd.h>
+#include <assert.h>
+#include <limits.h>
+#include <errno.h>
+
+#include <concord/discord.h>
+
+#include <khajiitbot.h>
+#include <commands.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-#define KBOT_PREFIX		"k."
+const static char *meow_response_self[] = {
+	"meows softly into the void.",
+	"meows loudly in everyone's face!",
+	"unleashes a fierce meow into the air!"
+};
 
-
-#define KBCOLOR_MSG		0xf5367c					// the default embed color used by bot embeds
-#define KBCOLOR_ERROR	0xe62f2f					// the embed color used for error messages
-
-#define KBCOLOR_TRUE			0x11ff5c
-#define KBCOLOR_FALSE			0xff2600
-#define KBCOLOR_UNDETERMINED	0xff9602
-
-
-#define STR_ARRAY_LEN(a)	(sizeof(a) / sizeof(*a))
-
-// ----------------------------------------------------------------------------------------------------
-
-void handle_action(struct discord *client, const struct discord_message *msg,
-	const char *response_self[], int response_self_len,
-	const char *response[], int response_len);
+const static char *meow_response[] = {
+	"meows in **%s**'s face!",
+	"meows in **%s**'s general direction!",
+	"gets all up in **%s**'s face and lets out a distinct meow!",
+	"shows **%s** their mewful mewsic!"
+};
 
 // ----------------------------------------------------------------------------------------------------
 
-#endif
+void action_meow(struct discord *client, const struct discord_message *msg) {
+	if (msg->author->bot) return;	// ignore bots
+	handle_action(client, msg, meow_response_self, STR_ARRAY_LEN(meow_response_self),
+		meow_response, STR_ARRAY_LEN(meow_response));
+}
