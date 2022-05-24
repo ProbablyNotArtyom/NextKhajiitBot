@@ -36,6 +36,7 @@
 // ----------------------------------------------------------------------------------------------------
 
 u64snowflake find_mention(struct discord *client, const struct discord_message *msg);
+u64snowflake find_target(struct discord *client, const struct discord_message *msg, char *target_mention[]);
 
 // ----------------------------------------------------------------------------------------------------
 

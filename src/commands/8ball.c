@@ -36,8 +36,9 @@
 
 #include <concord/discord.h>
 
-#include "khajiitbot.h"
-#include "commands.h"
+#include <khajiitbot.h>
+#include <commands.h>
+#include <parse.h>
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -74,9 +75,8 @@ const struct eightball_entry eightball_phrases[] = {	// list of 8ball phrases/re
 };
 
 void eight_ball(struct discord *client, const struct discord_message *msg) {
-	if (msg->author->bot) return;	// ignore bots
-	srand(time(0));					// generate seed for randomizer
-	int answer = rand() % (sizeof(eightball_phrases) / sizeof(eightball_phrases[0]));	// random number from 0 - 20
+	CMD_IGNORE_BOTS();
+	int answer = rand() % STRUCT_ARRAY_LEN(eightball_phrases);		// generate random index to our responses
 	struct discord_embed embeds[] = {
 		{
 			.color = eightball_phrases[answer].type,

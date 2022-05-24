@@ -40,31 +40,31 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
+#include <parse.h>
+#include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-const static char *stab_response_self[] = {
-	"stabs themselves. I dont know what they expected...",
-	"gets into a knife fight! They manage to end up with their own knife in their gut.",
-	"stabs themselves with a spoon. It isn't very effective..."
+const static char *hug_response_self[] = {
+ 	"hugs themselves, for some reason.",
+ 	"sets up for a hug, then somehow manages to hug themselves.",
+ 	"wraps their arms around themselves."
 };
 
-const static char *stab_response[] = {
-	"stabs **%s** right in the gut!",
-	"sneaks up behind **%s** and stabs them in the back!",
-	"gets into a knife fight with **%s**!",
-	"gets cheeky with **%s**!",
-	"stabs **%s** in an attempt to steal their yiff! :scream_cat:",
-	"lodges their blade directly into **%s**!",
-	"tries to stab **%s**, but ends up grabbing their own knife by the blade.",
-	"gives **%s** a friendly little eyepoke! Retina jelly, anyone?",
-	"exercises their green thumb and plants a few knives into **%s**'s back!"
+const static char *hug_response[] = {
+	"walks right up to **%s** and hugs them!",
+ 	"sneaks up behind **%s** and hugs them!",
+ 	"nuzzles up close to **%s** for a hug!",
+ 	"gives a big 'ol flufferhug to **%s**!",
+ 	"surprises **%s** with a warm hug!",
+ 	"embraces with **%s**. How sweet!",
+ 	"spreads the love to **%s** through a big 'ol hug!"
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-void action_stab(struct discord *client, const struct discord_message *msg) {
+void action_hug(struct discord *client, const struct discord_message *msg) {
 	if (msg->author->bot) return;	// ignore bots
-	handle_action(client, msg, stab_response_self, STR_ARRAY_LEN(stab_response_self),
-		stab_response, STR_ARRAY_LEN(stab_response));
+	handle_action(client, msg, hug_response_self, STR_ARRAY_LEN(hug_response_self),
+		hug_response, STR_ARRAY_LEN(hug_response));
 }

@@ -40,29 +40,32 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
+#include <parse.h>
+#include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-const static char *hug_response_self[] = {
- 	"hugs themselves, for some reason.",
- 	"sets up for a hug, then somehow manages to hug themselves.",
- 	"wraps their arms around themselves."
+const static char *shoot_response_self[] = {
+	"shoots themselves!",
+	"shoots themselves with a toy pistol; It wasn't very effective.",
+	"commits auto-shootification!"
 };
 
-const static char *hug_response[] = {
-	"walks right up to **%s** and hugs them!",
- 	"sneaks up behind **%s** and hugs them!",
- 	"nuzzles up close to **%s** for a hug!",
- 	"gives a big 'ol flufferhug to **%s**!",
- 	"surprises **%s** with a warm hug!",
- 	"embraces with **%s**. How sweet!",
- 	"spreads the love to **%s** through a big 'ol hug!"
+const static char *shoot_response[] = {
+	"shoots **%s**! Tragic.",
+	"gets into a knife fight with **%s**! Evidently, guns make great knives. ",
+	"performs advanced facial surgery on **%s** using a shotgun!",
+	"shoots **%s** point blank with a nerf blaster! They are immediately gibbed into hundreds of pieces.",
+	"duels to the death with **%s**! There are no survivors...",
+	"blasts **%s** right in their chest with a .22! It bounces right off.",
+	"dumps a pound of lead into **%s**!",
+	"lays down the law with **%s**."
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-void action_hug(struct discord *client, const struct discord_message *msg) {
+void action_shoot(struct discord *client, const struct discord_message *msg) {
 	if (msg->author->bot) return;	// ignore bots
-	handle_action(client, msg, hug_response_self, STR_ARRAY_LEN(hug_response_self),
-		hug_response, STR_ARRAY_LEN(hug_response));
+	handle_action(client, msg, shoot_response_self, STR_ARRAY_LEN(shoot_response_self),
+		shoot_response, STR_ARRAY_LEN(shoot_response));
 }

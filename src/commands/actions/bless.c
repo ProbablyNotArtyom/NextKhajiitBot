@@ -35,34 +35,35 @@
 #include <assert.h>
 #include <limits.h>
 #include <errno.h>
+#include <inttypes.h>
 
 #include <concord/discord.h>
 
 #include <khajiitbot.h>
 #include <commands.h>
+#include <parse.h>
+#include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-const static char *kiss_response_self[] = {
-	"somehow manages to kiss themselves.",
-	"kisses themselves. How did they do that!?",
-	"sets up for a kiss, but their lips somehow meet with their own face."
+const static char *bless_response_self[] = {
+	"blesses themselves!",
+	"appempts to bless themselves. Unfortunately, thats not how that works.",
+	"blesses themselves, placing a blessed_curse."
 };
 
-const static char *kiss_response[] = {
-	"gives a big ol kiss to **%s**!",
-	"attacks **%s** with a swarm of kisses!",
-	"sends a kiss to **%s** via USPS. It never arrived...",
-	"gives a big ol' kiss to **%s**!",
-	"attacks **%s** with a swarm of kisses!",
-	"creates unnecesary tension by kissing **%s**!",
-	"lays down a big moist smooch towards **%s**!"
+const static char *bless_response[] = {
+	"blesses **%s**!",
+	"gives bless to **%s**!",
+	"grants blessed_bless to **%s**!",
+	"accidentally curses **%s**! I can't believe you've done this.",
+	"declares **%s**  a truly blessed entity!"
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-void action_kiss(struct discord *client, const struct discord_message *msg) {
+void action_bless(struct discord *client, const struct discord_message *msg) {
 	if (msg->author->bot) return;	// ignore bots
-	handle_action(client, msg, kiss_response_self, STR_ARRAY_LEN(kiss_response_self),
-		kiss_response, STR_ARRAY_LEN(kiss_response));
+	handle_action(client, msg, bless_response_self, STR_ARRAY_LEN(bless_response_self),
+		bless_response, STR_ARRAY_LEN(bless_response));
 }

@@ -40,24 +40,33 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
+#include <parse.h>
+#include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-const static char *respects_response_self[] = {
-	"pays their respects. :regional_indicator_f:",
-	"pays their respects.",
-	"pays their respects."
+const static char *nuke_response_self[] = {
+	"nukes themselves!",
+	"manages to drop their nuke on their own head! Bye bye...",
+	"nukes themselves, for some reason."
 };
 
-const static char *respects_response[] = {
-	"pays their respects to **%s**.",
-	"lays down a fat F for **%s**."
+const static char *nuke_response[] = {
+	"unleashes the hellfire of a thousand suns onto **%s**!",
+	"nukes the fuck out of **%s**!",
+	"drops a fat man on **%s**!",
+	"turns **%s** into the next fallout game!",
+	"nukes **%s**!",
+	"straight up nukes **%s**!",
+	"consigns **%s** to total nuclear annihilation!",
+	"made **%s** wish for a nuclear winter.",
+	"turned **%s** into the next Bikini Atoll!"
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-void action_respects(struct discord *client, const struct discord_message *msg) {
+void action_nuke(struct discord *client, const struct discord_message *msg) {
 	if (msg->author->bot) return;	// ignore bots
-	handle_action(client, msg, respects_response_self, STR_ARRAY_LEN(respects_response_self),
-		respects_response, STR_ARRAY_LEN(respects_response));
+	handle_action(client, msg, nuke_response_self, STR_ARRAY_LEN(nuke_response_self),
+		nuke_response, STR_ARRAY_LEN(nuke_response));
 }

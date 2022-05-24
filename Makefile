@@ -36,11 +36,11 @@ LDFLAGS := -L /usr/lib -fwhole-program $(LIBS)
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 .PHONY: all clean test install uninstall
-all: $(OBJECTS) $(BINARY_NAME)
-	@echo "[--] Copying resources"
-	@cp -R $(RESDIR) $(BINDIR)
-	@echo "[--] cp -R $(RESDIR) $(BINDIR)"
-
+all: clean
+	mkdir -p $(BINDIR) $(OBJDIR)
+	$(MAKE) $(OBJECTS)
+	$(MAKE) $(BINARY_NAME)
+	
 .SECONDEXPANSION :
 $(BINARY_NAME): $(OBJECTS)
 	@echo "[LD] Creating final binary"
@@ -59,4 +59,4 @@ clean:
 	rm $(BINDIR) -vfr
 
 run:
-	cd $(BINDIR) && ./$(BINARY_NAME)
+	cd $(BINDIR) && ./$(BINARY_NAME) -d $(BASEDIR)/config.json

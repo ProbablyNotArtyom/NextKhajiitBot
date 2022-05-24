@@ -36,104 +36,25 @@
 #include <limits.h>
 #include <errno.h>
 #include <inttypes.h> /* SCNu64 */
+#include <getopt.h>
 
 #include <concord/discord.h>
 
-#include "khajiitbot.h"
-#include "commands.h"
-#include "parse.h"
+#include <khajiitbot.h>
+#include <commands.h>
+#include <parse.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-void on_fallback(struct discord *client, const struct discord_message *msg) {
-	const size_t MAX_FSIZE = 5e6; // 5 mb
-	const size_t MAX_CHARS = 2000;
-	FILE *fp;
+bool kbot_debug = false;
 
-	if (NULL == (fp = popen(msg->content, "r"))) {
-		perror("Failed to run command");
-		return;
-	}
+// ----------------------------------------------------------------------------------------------------
 
-	char *path = (char *)calloc(1, MAX_FSIZE);
-	char *pathtmp = (char *)calloc(1, MAX_FSIZE);
-	while (NULL != fgets(path, MAX_FSIZE, fp)) {
-		strncat(pathtmp, path, MAX_FSIZE - 1);
-	}
-
-	const size_t fsize = strlen(pathtmp);
-
-	if (fsize <= MAX_CHARS) {
-		struct discord_create_message params = { .content = pathtmp };
-		discord_create_message(client, msg->channel_id, &params, NULL);
-	}
-	else {
-		struct discord_attachment attachment = {
-			.content = pathtmp,
-			.size = fsize,
-		};
-
-		struct discord_create_message params = {
-			.attachments = &(struct discord_attachments) {
-				.size = 1,
-				.array = &attachment,
-			}
-		};
-		discord_create_message(client, msg->channel_id, &params, NULL);
-	}
-
-	pclose(fp);
-	free(path);
-	free(pathtmp);
-}
-
-void on_ready(struct discord *client) {
-	const struct discord_user *bot = discord_get_self(client);
-	log_info("8ball-Bot succesfully connected to Discord as %s#%s!", bot->username, bot->discriminator);
-}
-
+void on_fallback(struct discord *client, const struct discord_message *msg);
+void on_ready(struct discord *client);
 void handle_action(struct discord *client, const struct discord_message *msg,
-	const char *response_self[], int response_self_len,
-	const char *response[], int response_len) {
-
-	srand(time(0));					// generate seed for randomizer
-	int answer;
-	char final[2000];
-	char tmp[2000];
-	char target_mention[2000];
-
-	u64snowflake target_id = find_mention(client, msg);
-	if (msg->author->id == target_id || target_id == 0) {	// handle targeting self
-		printf("[Handling self]\n");
-		answer = rand() % response_self_len;
-		sprintf(final, "**<@%" PRIu64 ">** %s", msg->author->id, response_self[answer]);
-	} else {
-		printf("[Handling targeted]\n");
-		answer = rand() % response_len;
-		sprintf(tmp, "**<@%" PRIu64 ">** %s", msg->author->id, response[answer]);
-		printf("tmp: %s\n", tmp);
-		sprintf(target_mention, "**<@%" PRIu64 ">**", target_id);
-		printf("target_mention: %s\n", target_mention);
-		sprintf(final, tmp, target_mention);
-		printf("final: %s\n", final);
-	}
-
-	struct discord_embed embeds[] = {
-		{
-			.color = KBCOLOR_MSG,
-			.description = final
-		}
-	};
-
-	struct discord_create_message params = {
-		.embeds = &(struct discord_embeds) {
-			.size = sizeof(embeds) / sizeof *embeds,
-			.array = embeds,
-		}
-	};
-
-	discord_create_message(client, msg->channel_id, &params, NULL);
-}
+				   const char *response_self[], int response_self_len,
+				   const char *response[], int response_len);
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -142,20 +63,62 @@ int main (int argc, char **argv) {
 	struct discord *client;
 
 	printf("KhajiitBot 2.0a\n");
+	srand(time(0));							// ensure that a seed is set for rand
 
-	if (argc > 1) config_file = argv[1];	// if any arguments are passed, assume the first one is the path to the config
-	else config_file = "../config.json";	// otherwise default to a known relative location
+	/* parse command line options */
+	while (1) {
+		int opt_index = 0;
+		int opt;
+		static struct option long_options[] = {
+			{ "help",	no_argument,	0,	'h' },
+			{ "debug",	no_argument,	0,	'd' },
+			{ 0,		0,				0,	0 }
+		};
+		
+		opt = getopt_long(argc, argv, "hd", long_options, &opt_index);
+		if (opt == -1) break;	// break when no more options are left
+		
+		switch (opt) {
+			/* help option */
+			case 'h':
+				printf(
+					"KhajiitBot - A discord bot written in C using Concord\n"
+					"Usage: khajiitBot [OPTIONS] CONFIG\n"
+					"\n"
+					"Where OPTIONS are any of:\n"
+					"\t-h\t--help             display this help and exit\n"
+					"\t-d\t--debug            enables the display of internal debug information\n"
+					"\n"
+					"CONFIG is the path to the configuration file and is required for bot operation\n"
+					"if it is not specified then './config.json' will be used\n"
+					"\n"
+				);
+				return;
+			/* debug option */
+			case 'd':
+				printf("Debug enabled.\n");
+				kbot_debug = true;
+				break;
+			default:
+		}
+	}
+	
+	if (optind < argc) config_file = argv[optind];	// use the first unknown arg as the config path
+	else config_file = "./config.json";				// otherwise default to a known relative location
 
+	/* initialize concord */
 	ccord_global_init();
 	client = discord_config_init(config_file);
 	assert(NULL != client && "Couldn't initialize client");
 
-	discord_set_prefix(client, KBOT_PREFIX);	// Set the command prefix
+	/* set various configuration options provided by concord */
+	discord_set_prefix(client, KBOT_PREFIX);
 	discord_set_on_ready(client, &on_ready);
 
+	/* set fallback for debug purposes */
 	discord_set_on_command(client, NULL, &on_fallback);
-	discord_set_on_command(client, "8ball", &eight_ball);
 
+	/* register action commands */
 	discord_set_on_command(client, "bless", &action_bless);
 	discord_set_on_command(client, "boof", &action_boof);
 	discord_set_on_command(client, "grope", &action_grope);
@@ -169,9 +132,101 @@ int main (int argc, char **argv) {
 	discord_set_on_command(client, "stab", &action_stab);
 	discord_set_on_command(client, "vore", &action_vore);
 	discord_set_on_command(client, "yiff", &action_yiff);
+	
+	/* register misc commands */
+	discord_set_on_command(client, "8ball", &eight_ball);
 
+	/* run the bot */
 	discord_run(client);
 
+	/* clean up after ourselves upon bot termination */
 	discord_cleanup(client);
 	ccord_global_cleanup();
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+void on_fallback(struct discord *client, const struct discord_message *msg) {
+	const size_t MAX_FSIZE = 5e6;	// 5 mb
+	const size_t MAX_CHARS = 2000;
+	FILE *fp;
+	
+	if (NULL == (fp = popen(msg->content, "r"))) {
+		perror("Failed to run command");
+		return;
+	}
+	
+	char *path = (char *)calloc(1, MAX_FSIZE);
+	char *pathtmp = (char *)calloc(1, MAX_FSIZE);
+	while (NULL != fgets(path, MAX_FSIZE, fp)) strncat(pathtmp, path, MAX_FSIZE - 1);
+	
+	const size_t fsize = strlen(pathtmp);
+	if (fsize <= MAX_CHARS) {
+		struct discord_create_message params = { .content = pathtmp };
+		discord_create_message(client, msg->channel_id, &params, NULL);
+	} else {
+		struct discord_attachment attachment = {
+			.content = pathtmp,
+			.size = fsize,
+		};
+		
+		struct discord_create_message params = {
+			.attachments = &(struct discord_attachments) {
+				.size = 1,
+				.array = &attachment,
+			}
+		};
+		
+		discord_create_message(client, msg->channel_id, &params, NULL);
+	}
+	
+	pclose(fp);
+	free(path);
+	free(pathtmp);
+}
+
+void on_ready(struct discord *client) {
+	const struct discord_user *bot = discord_get_self(client);
+	log_info("KhajiitBot succesfully connected to Discord as %s#%s!", bot->username, bot->discriminator);
+}
+
+void handle_action(struct discord *client, const struct discord_message *msg,
+				   const char *response_self[], int response_self_len,
+				   const char *response[], int response_len) {
+	
+	int answer;
+	char final[_ACTION_MAX_LEN];
+	char tmp[_ACTION_MAX_LEN];
+	char target_mention[_TARGET_MAX_LEN];
+	u64snowflake target_id;
+	
+	/* run a parse for any targets in the message */
+	target_id = find_target(client, msg, &target_mention);
+	
+	if (msg->author->id == target_id || strlen(msg->content) == 0) {	// handle targeting self
+		printf("[Handling Self]\n");
+		answer = rand() % response_self_len;
+		sprintf(final, "**<@%" PRIu64 ">** %s", msg->author->id, response_self[answer]);
+	} else {								// handle targeting a direct mention
+		printf("[Handling Direct Mention]\n");
+		answer = rand() % response_len;
+		sprintf(tmp, "**<@%" PRIu64 ">** %s", msg->author->id, response[answer]);
+		sprintf(final, tmp, target_mention);
+	}
+	
+	struct discord_embed embeds[] = {
+		{
+			.color = KBCOLOR_MSG,
+			.description = final
+		}
+	};
+	
+	struct discord_create_message params = {
+		.embeds = &(struct discord_embeds) {
+			.size = sizeof(embeds) / sizeof *embeds,
+			.array = embeds,
+		}
+	};
+	
+	discord_create_message(client, msg->channel_id, &params, NULL);
 }

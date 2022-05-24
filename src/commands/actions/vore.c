@@ -40,29 +40,33 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
+#include <parse.h>
+#include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-const static char *grope_response_self[] = {
-	"gropes themselves?",
-	"grops theiw own bulgy wulgy uwu owo uwu!!!!",
-	"slaps their own balls?"
+const static char *vore_response_self[] = {
+	"manages to vore themselves. Impressive!",
+	"vores himself?",
+	"chows down on his own arm!"
 };
 
-const static char *grope_response[] = {
-	"grops **%s**'s bulgy woolgy!",
-	"gwabs **%s**'s buwlgy wulgy uwu owo uwu!!!!",
-	"sexually assults **%s**",
-	"grops **%s**'s bulgy woolgy!",
-	"gwabs **%s**'s buwlgy wulgy uwu owo uwu!!!!",
-	"grabs **%s** by the :b:ussy!",
-	", you may need to seriously reconsider your life choices if you're going to virtua-grope someone on a furry discord."
+const static char *vore_response[] = {
+	"vores **%s**!",
+	"glomps **%s** with their big wide mouth!",
+	"glomps **%s** with their big wide mouth!",
+	"attempts to vore **%s**! Unfortunately that's an impossible task and all they did was get **%s**'s arm wet.",
+	"starts devouring **%s**'s ass.",
+	"starts devouring **%s**'s ass.",
+	"frikin murders **%s** and eats the remains.",
+	"vores **%s**. \\*burp\\*.",
+	"swallows **%s** in one gulp! They were never seen again."
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-void action_grope(struct discord *client, const struct discord_message *msg) {
+void action_vore(struct discord *client, const struct discord_message *msg) {
 	if (msg->author->bot) return;	// ignore bots
-	handle_action(client, msg, grope_response_self, STR_ARRAY_LEN(grope_response_self),
-		grope_response, STR_ARRAY_LEN(grope_response));
+	handle_action(client, msg, vore_response_self, STR_ARRAY_LEN(vore_response_self),
+		vore_response, STR_ARRAY_LEN(vore_response));
 }

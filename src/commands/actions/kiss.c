@@ -40,31 +40,31 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
+#include <parse.h>
+#include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-const static char *vore_response_self[] = {
-	"manages to vore themselves. Impressive!",
-	"vores himself?",
-	"chows down on his own arm!"
+const static char *kiss_response_self[] = {
+	"somehow manages to kiss themselves.",
+	"kisses themselves. How did they do that!?",
+	"sets up for a kiss, but their lips somehow meet with their own face."
 };
 
-const static char *vore_response[] = {
-	"vores **%s**!",
-	"glomps **%s** with their big wide mouth!",
-	"glomps **%s** with their big wide mouth!",
-	"attempts to vore **%s**! Unfortunately that's an impossible task and all they did was get **%s**'s arm wet.",
-	"starts devouring **%s**'s ass.",
-	"starts devouring **%s**'s ass.",
-	"frikin murders **%s** and eats the remains.",
-	"vores **%s**. \\*burp\\*.",
-	"swallows **%s** in one gulp! They were never seen again."
+const static char *kiss_response[] = {
+	"gives a big ol kiss to **%s**!",
+	"attacks **%s** with a swarm of kisses!",
+	"sends a kiss to **%s** via USPS. It never arrived...",
+	"gives a big ol' kiss to **%s**!",
+	"attacks **%s** with a swarm of kisses!",
+	"creates unnecesary tension by kissing **%s**!",
+	"lays down a big moist smooch towards **%s**!"
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-void action_vore(struct discord *client, const struct discord_message *msg) {
+void action_kiss(struct discord *client, const struct discord_message *msg) {
 	if (msg->author->bot) return;	// ignore bots
-	handle_action(client, msg, vore_response_self, STR_ARRAY_LEN(vore_response_self),
-		vore_response, STR_ARRAY_LEN(vore_response));
+	handle_action(client, msg, kiss_response_self, STR_ARRAY_LEN(kiss_response_self),
+		kiss_response, STR_ARRAY_LEN(kiss_response));
 }

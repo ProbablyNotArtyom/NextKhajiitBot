@@ -40,27 +40,33 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
+#include <parse.h>
+#include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-const static char *boof_response_self[] = {
-	"rips da boof hella hard",
-	"smonks da boof :)",
-	"gets da boof passed to them. yap"
+const static char *stab_response_self[] = {
+	"stabs themselves. I dont know what they expected...",
+	"gets into a knife fight! They manage to end up with their own knife in their gut.",
+	"stabs themselves with a spoon. It isn't very effective..."
 };
 
-const static char *boof_response[] = {
-	"passes da boof to **%s**",
-	"drops da boof while passing it to **%s**. :(",
-	"gives da boof to **%s**",
-	"rips da boof with **%s**",
-	"shares da boof with **%s**"
+const static char *stab_response[] = {
+	"stabs **%s** right in the gut!",
+	"sneaks up behind **%s** and stabs them in the back!",
+	"gets into a knife fight with **%s**!",
+	"gets cheeky with **%s**!",
+	"stabs **%s** in an attempt to steal their yiff! :scream_cat:",
+	"lodges their blade directly into **%s**!",
+	"tries to stab **%s**, but ends up grabbing their own knife by the blade.",
+	"gives **%s** a friendly little eyepoke! Retina jelly, anyone?",
+	"exercises their green thumb and plants a few knives into **%s**'s back!"
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-void action_boof(struct discord *client, const struct discord_message *msg) {
+void action_stab(struct discord *client, const struct discord_message *msg) {
 	if (msg->author->bot) return;	// ignore bots
-	handle_action(client, msg, boof_response_self, STR_ARRAY_LEN(boof_response_self),
-		boof_response, STR_ARRAY_LEN(boof_response));
+	handle_action(client, msg, stab_response_self, STR_ARRAY_LEN(stab_response_self),
+		stab_response, STR_ARRAY_LEN(stab_response));
 }

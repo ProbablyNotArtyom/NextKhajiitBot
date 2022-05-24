@@ -40,30 +40,31 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
+#include <parse.h>
+#include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-const static char *shoot_response_self[] = {
-	"shoots themselves!",
-	"shoots themselves with a toy pistol; It wasn't very effective.",
-	"commits auto-shootification!"
+const static char *grope_response_self[] = {
+	"gropes themselves?",
+	"grops theiw own bulgy wulgy uwu owo uwu!!!!",
+	"slaps their own balls?"
 };
 
-const static char *shoot_response[] = {
-	"shoots **%s**! Tragic.",
-	"gets into a knife fight with **%s**! Evidently, guns make great knives. ",
-	"performs advanced facial surgery on **%s** using a shotgun!",
-	"shoots **%s** point blank with a nerf blaster! They are immediately gibbed into hundreds of pieces.",
-	"duels to the death with **%s**! There are no survivors...",
-	"blasts **%s** right in their chest with a .22! It bounces right off.",
-	"dumps a pound of lead into **%s**!",
-	"lays down the law with **%s**."
+const static char *grope_response[] = {
+	"grops **%s**'s bulgy woolgy!",
+	"gwabs **%s**'s buwlgy wulgy uwu owo uwu!!!!",
+	"sexually assults **%s**",
+	"grops **%s**'s bulgy woolgy!",
+	"gwabs **%s**'s buwlgy wulgy uwu owo uwu!!!!",
+	"grabs **%s** by the :b:ussy!",
+	", you may need to seriously reconsider your life choices if you're going to virtua-grope someone on a furry discord."
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-void action_shoot(struct discord *client, const struct discord_message *msg) {
+void action_grope(struct discord *client, const struct discord_message *msg) {
 	if (msg->author->bot) return;	// ignore bots
-	handle_action(client, msg, shoot_response_self, STR_ARRAY_LEN(shoot_response_self),
-		shoot_response, STR_ARRAY_LEN(shoot_response));
+	handle_action(client, msg, grope_response_self, STR_ARRAY_LEN(grope_response_self),
+		grope_response, STR_ARRAY_LEN(grope_response));
 }

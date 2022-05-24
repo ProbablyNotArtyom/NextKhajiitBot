@@ -40,28 +40,26 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
+#include <parse.h>
+#include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-const static char *pet_response_self[] = {
-	"pets their own head.",
-	"attempts to pet someone on the head, yet somehow manages to pet their own.",
-	"wasn't even trying to pet anyone, yet still ends up petting themselves."
+const static char *respects_response_self[] = {
+	"pays their respects. :regional_indicator_f:",
+	"pays their respects.",
+	"pays their respects."
 };
 
-const static char *pet_response[] = {
-	"pets **%s** on their head!",
-	"gives **%s** pets!",
-	"sneaks up behind **%s** and surprizes them with a swarm of petting!",
-	"fuzzily pets **%s**!",
-	"pets **%s**'s warm fuzzy fluff!",
-	"pets **%s** like the animal they are."
+const static char *respects_response[] = {
+	"pays their respects to **%s**.",
+	"lays down a fat F for **%s**."
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-void action_pet(struct discord *client, const struct discord_message *msg) {
+void action_respects(struct discord *client, const struct discord_message *msg) {
 	if (msg->author->bot) return;	// ignore bots
-	handle_action(client, msg, pet_response_self, STR_ARRAY_LEN(pet_response_self),
-		pet_response, STR_ARRAY_LEN(pet_response));
+	handle_action(client, msg, respects_response_self, STR_ARRAY_LEN(respects_response_self),
+		respects_response, STR_ARRAY_LEN(respects_response));
 }
