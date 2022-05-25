@@ -30,7 +30,7 @@ LIBS = -lpthread -ldiscord -lcurl
 SOURCES := $(shell find ./src -name '*.c')
 OBJECTS := $(foreach tmp, $(SOURCES:%.c=%.o), $(OBJDIR)/$(tmp))
 
-CFLAGS := -w $(LIBS) -I $(SRCDIR)
+CFLAGS := $(LIBS) -I $(SRCDIR) -Wpedantic
 LDFLAGS := -L /usr/lib -fwhole-program $(LIBS)
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-

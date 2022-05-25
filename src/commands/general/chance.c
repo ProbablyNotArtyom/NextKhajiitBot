@@ -27,31 +27,36 @@
 // A new rendition of khajiitbot in C using the Concord discord library
 // ====================================================================================================
 
-#ifndef _KBOT_ACTIONS_H
-#define _KBOT_ACTIONS_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <unistd.h>
+#include <time.h>
+
+#include <concord/discord.h>
+
+#include <khajiitbot.h>
+#include <commands.h>
+#include <parse.h>
 
 // ----------------------------------------------------------------------------------------------------
 
-void handle_action(struct discord *client, const struct discord_message *msg,
-				   const char *response_self[], int response_self_len,
-				   const char *response[], int response_len);
+void command_chance(struct discord *client, const struct discord_message *msg) {
+	CMD_IGNORE_BOTS();
+	char strbuff[_MSG_MAX_LEN];
+	
+	if (strlen(msg->content) == 0) {	// handle no inputs
+		SEND_COLOR_EMBED("I can't predict the chance of nothing! I need at least 1 input.", KBCOLOR_ERROR);
+		return;
+	}
+	
+	/* create the format string, inserting the target and the rand call */
+	snprintf(strbuff, sizeof(strbuff),
+		"I give the chance that **%s** a **%d/10**",
+		msg->content, (rand() % 11));
+	
+	SEND_MSG_EMBED(strbuff);
+}
 
 // ----------------------------------------------------------------------------------------------------
-
-void action_bless(struct discord *client, const struct discord_message *msg);
-void action_boof(struct discord *client, const struct discord_message *msg);
-void action_grope(struct discord *client, const struct discord_message *msg);
-void action_hug(struct discord *client, const struct discord_message *msg);
-void action_kiss(struct discord *client, const struct discord_message *msg);
-void action_meow(struct discord *client, const struct discord_message *msg);
-void action_nuke(struct discord *client, const struct discord_message *msg);
-void action_pet(struct discord *client, const struct discord_message *msg);
-void action_respects(struct discord *client, const struct discord_message *msg);
-void action_shoot(struct discord *client, const struct discord_message *msg);
-void action_stab(struct discord *client, const struct discord_message *msg);
-void action_vore(struct discord *client, const struct discord_message *msg);
-void action_yiff(struct discord *client, const struct discord_message *msg);
-
-// ----------------------------------------------------------------------------------------------------
-
-#endif

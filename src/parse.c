@@ -80,22 +80,26 @@ u64snowflake find_mention(struct discord *client, const struct discord_message *
 // If a direct mention is found, the user ID is returned and target_mention is populated with the formatted mention
 // If the message is not empty but no valid mention is found, then 0 is returned and target_mention is still populated
 // When the message is blank, 0 is returned and target_mention is untouched
-u64snowflake find_target(struct discord *client, const struct discord_message *msg, char *target_mention[]) {
+u64snowflake find_target(struct discord *client, const struct discord_message *msg, char *target_mention[], size_t bufflen) {
 	/* attempt to parse a direct mention */
 	u64snowflake target_id = find_mention(client, msg);
 	
 	if (target_id == 0 && strlen(msg->content) != 0) {	// handle string target
-		
+
 		/* set up a query and search for any partial username matches */
 		struct discord_guild_members members = { 0 };
 		struct discord_ret_guild_members ret = { .sync = &members };
 		struct discord_search_guild_members params = { .limit = 1000, .query = msg->content };
 		discord_search_guild_members(client, msg->guild_id, &params, &ret);
 		
-		if (members.size == 0) sprintf(target_mention, "**%s**", msg->content);			// if no matches were found, handle as a string target
-		else sprintf(target_mention, "**<@%" PRIu64 ">**", members.array[0].user->id);	// otherwise, create a mention using the match
-		
-	} else sprintf(target_mention, "**<@%" PRIu64 ">**", target_id);	// handle direct mention
+		if (members.size == 0) {
+			snprintf(*target_mention, bufflen, "**%s**", msg->content);			// if no matches were found, handle as a string target
+		} else {
+			snprintf(*target_mention, bufflen, "**<@%" PRIu64 ">**", members.array[0].user->id);	// otherwise, create a mention using the match
+		}
+	} else {
+		snprintf(*target_mention, bufflen, "**<@%" PRIu64 ">**", target_id);	// handle direct mention
+	}
 	
 	ON_DEBUG printf("target_mention: %s\n", target_mention);
 	return target_id;

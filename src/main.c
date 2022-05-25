@@ -43,6 +43,7 @@
 #include <khajiitbot.h>
 #include <commands.h>
 #include <parse.h>
+#include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -134,7 +135,11 @@ int main (int argc, char **argv) {
 	discord_set_on_command(client, "yiff", &action_yiff);
 	
 	/* register misc commands */
-	discord_set_on_command(client, "8ball", &eight_ball);
+	discord_set_on_command(client, "8ball", &command_eight_ball);
+	discord_set_on_command(client, "help", &command_help);
+	discord_set_on_command(client, "chance", &command_chance);
+	discord_set_on_command(client, "random", &command_random);
+	discord_set_on_command(client, "rate", &command_rate);
 
 	/* run the bot */
 	discord_run(client);
@@ -201,32 +206,18 @@ void handle_action(struct discord *client, const struct discord_message *msg,
 	u64snowflake target_id;
 	
 	/* run a parse for any targets in the message */
-	target_id = find_target(client, msg, &target_mention);
+	target_id = find_target(client, msg, &target_mention, sizeof(target_mention));
 	
 	if (msg->author->id == target_id || strlen(msg->content) == 0) {	// handle targeting self
-		printf("[Handling Self]\n");
+		ON_DEBUG ("[Handling Self]\n");
 		answer = rand() % response_self_len;
-		sprintf(final, "**<@%" PRIu64 ">** %s", msg->author->id, response_self[answer]);
+		snprintf(final, sizeof(final), "**<@%" PRIu64 ">** %s", msg->author->id, response_self[answer]);
 	} else {								// handle targeting a direct mention
-		printf("[Handling Direct Mention]\n");
+		ON_DEBUG printf("[Handling Direct Mention]\n");
 		answer = rand() % response_len;
-		sprintf(tmp, "**<@%" PRIu64 ">** %s", msg->author->id, response[answer]);
-		sprintf(final, tmp, target_mention);
+		snprintf(tmp, sizeof(tmp), "**<@%" PRIu64 ">** %s", msg->author->id, response[answer]);
+		snprintf(final, sizeof(final), tmp, target_mention);
 	}
 	
-	struct discord_embed embeds[] = {
-		{
-			.color = KBCOLOR_MSG,
-			.description = final
-		}
-	};
-	
-	struct discord_create_message params = {
-		.embeds = &(struct discord_embeds) {
-			.size = sizeof(embeds) / sizeof *embeds,
-			.array = embeds,
-		}
-	};
-	
-	discord_create_message(client, msg->channel_id, &params, NULL);
+	SEND_MSG_EMBED(&final);
 }

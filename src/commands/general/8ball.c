@@ -51,6 +51,8 @@ struct eightball_entry {
 	const int type;
 };
 
+// ----------------------------------------------------------------------------------------------------
+
 const struct eightball_entry eightball_phrases[] = {	// list of 8ball phrases/responses
 	{ "It is certain.", EIGHTBALL_RESPONSE_POSITIVE },
 	{ "It is decidedly so.", EIGHTBALL_RESPONSE_POSITIVE },
@@ -74,7 +76,7 @@ const struct eightball_entry eightball_phrases[] = {	// list of 8ball phrases/re
 	{ "Very doubtful.", EIGHTBALL_RESPONSE_NEGATIVE }
 };
 
-void eight_ball(struct discord *client, const struct discord_message *msg) {
+void command_eight_ball(struct discord *client, const struct discord_message *msg) {
 	CMD_IGNORE_BOTS();
 	int answer = rand() % STRUCT_ARRAY_LEN(eightball_phrases);		// generate random index to our responses
 	struct discord_embed embeds[] = {
