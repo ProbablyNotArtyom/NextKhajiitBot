@@ -38,7 +38,7 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
-#include <parse.h>
+#include <utils.h>
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -47,13 +47,13 @@
 #define EIGHTBALL_RESPONSE_NEUTRAL		0xff9602
 
 struct eightball_entry {
-	const char *response;
-	const int type;
+	char *response;
+	int type;
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-const struct eightball_entry eightball_phrases[] = {	// list of 8ball phrases/responses
+static struct eightball_entry eightball_phrases[] = {	// list of 8ball phrases/responses
 	{ "It is certain.", EIGHTBALL_RESPONSE_POSITIVE },
 	{ "It is decidedly so.", EIGHTBALL_RESPONSE_POSITIVE },
 	{ "Without a doubt.", EIGHTBALL_RESPONSE_POSITIVE },

@@ -42,7 +42,7 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
-#include <parse.h>
+#include <utils.h>
 #include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------
@@ -94,13 +94,14 @@ int main (int argc, char **argv) {
 					"if it is not specified then './config.json' will be used\n"
 					"\n"
 				);
-				return;
+				return true;
 			/* debug option */
 			case 'd':
 				printf("Debug enabled.\n");
 				kbot_debug = true;
 				break;
 			default:
+				break;
 		}
 	}
 	
@@ -114,10 +115,6 @@ int main (int argc, char **argv) {
 
 	/* set various configuration options provided by concord */
 	discord_set_prefix(client, KBOT_PREFIX);
-	discord_set_on_ready(client, &on_ready);
-
-	/* set fallback for debug purposes */
-	discord_set_on_command(client, NULL, &on_fallback);
 
 	/* register action commands */
 	discord_set_on_command(client, "bless", &action_bless);
@@ -147,77 +144,8 @@ int main (int argc, char **argv) {
 	/* clean up after ourselves upon bot termination */
 	discord_cleanup(client);
 	ccord_global_cleanup();
+	return true;
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-void on_fallback(struct discord *client, const struct discord_message *msg) {
-	const size_t MAX_FSIZE = 5e6;	// 5 mb
-	const size_t MAX_CHARS = 2000;
-	FILE *fp;
-	
-	if (NULL == (fp = popen(msg->content, "r"))) {
-		perror("Failed to run command");
-		return;
-	}
-	
-	char *path = (char *)calloc(1, MAX_FSIZE);
-	char *pathtmp = (char *)calloc(1, MAX_FSIZE);
-	while (NULL != fgets(path, MAX_FSIZE, fp)) strncat(pathtmp, path, MAX_FSIZE - 1);
-	
-	const size_t fsize = strlen(pathtmp);
-	if (fsize <= MAX_CHARS) {
-		struct discord_create_message params = { .content = pathtmp };
-		discord_create_message(client, msg->channel_id, &params, NULL);
-	} else {
-		struct discord_attachment attachment = {
-			.content = pathtmp,
-			.size = fsize,
-		};
-		
-		struct discord_create_message params = {
-			.attachments = &(struct discord_attachments) {
-				.size = 1,
-				.array = &attachment,
-			}
-		};
-		
-		discord_create_message(client, msg->channel_id, &params, NULL);
-	}
-	
-	pclose(fp);
-	free(path);
-	free(pathtmp);
-}
-
-void on_ready(struct discord *client) {
-	const struct discord_user *bot = discord_get_self(client);
-	log_info("KhajiitBot succesfully connected to Discord as %s#%s!", bot->username, bot->discriminator);
-}
-
-void handle_action(struct discord *client, const struct discord_message *msg,
-				   const char *response_self[], int response_self_len,
-				   const char *response[], int response_len) {
-	
-	int answer;
-	char final[_ACTION_MAX_LEN];
-	char tmp[_ACTION_MAX_LEN];
-	char target_mention[_TARGET_MAX_LEN];
-	u64snowflake target_id;
-	
-	/* run a parse for any targets in the message */
-	target_id = find_target(client, msg, &target_mention, sizeof(target_mention));
-	
-	if (msg->author->id == target_id || strlen(msg->content) == 0) {	// handle targeting self
-		ON_DEBUG ("[Handling Self]\n");
-		answer = rand() % response_self_len;
-		snprintf(final, sizeof(final), "**<@%" PRIu64 ">** %s", msg->author->id, response_self[answer]);
-	} else {								// handle targeting a direct mention
-		ON_DEBUG printf("[Handling Direct Mention]\n");
-		answer = rand() % response_len;
-		snprintf(tmp, sizeof(tmp), "**<@%" PRIu64 ">** %s", msg->author->id, response[answer]);
-		snprintf(final, sizeof(final), tmp, target_mention);
-	}
-	
-	SEND_MSG_EMBED(&final);
-}

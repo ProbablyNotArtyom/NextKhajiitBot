@@ -32,12 +32,6 @@
 
 // ----------------------------------------------------------------------------------------------------
 
-void handle_action(struct discord *client, const struct discord_message *msg,
-				   const char *response_self[], int response_self_len,
-				   const char *response[], int response_len);
-
-// ----------------------------------------------------------------------------------------------------
-
 void action_bless(struct discord *client, const struct discord_message *msg);
 void action_boof(struct discord *client, const struct discord_message *msg);
 void action_grope(struct discord *client, const struct discord_message *msg);

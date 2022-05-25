@@ -27,8 +27,8 @@
 // A new rendition of khajiitbot in C using the Concord discord library
 // ====================================================================================================
 
-#ifndef _KBOT_PARSE_H
-#define _KBOT_PARSE_H
+#ifndef _KBOT_UTILS_H
+#define _KBOT_UTILS_H
 
 #include <inttypes.h> /* SCNu64 */
 #include <concord/discord.h>
@@ -37,6 +37,10 @@
 
 u64snowflake find_mention(struct discord *client, const struct discord_message *msg);
 u64snowflake find_target(struct discord *client, const struct discord_message *msg, char *target_mention[], size_t bufflen);
+
+void handle_action(struct discord *client, const struct discord_message *msg,
+				   const char *response_self[], int response_self_len,
+				   const char *response[], int response_len);
 
 // ----------------------------------------------------------------------------------------------------
 

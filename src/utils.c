@@ -41,6 +41,7 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
+#include <utils.h>
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -48,30 +49,38 @@
 // If the returned ID is 0, then no mention was found
 // always returns the first mention in the message if multiple are present
 u64snowflake find_mention(struct discord *client, const struct discord_message *msg) {
+	if (strlen(msg->content) == 0) return 0;	// if the message is blank then dont bother parsing
+	
 	int index = 0;
 	u64snowflake ret = 0;
-	char *newstr = (char *)malloc(strlen(msg->content) + 1);
-	char *newstr_orig = newstr;
-	bool valid = false;
-	
-	if (strlen(msg->content) == 0) return 0;	// if the message is blank then dont bother parsing
+	char *newstr = (char *)malloc(strlen(msg->content) + 1);	// allocate a buffer for a copy of the msg
+	char *newstr_orig = newstr;									// save the allocated pointer so we can free it later
+
+	/* clone the message content */
 	strcpy(newstr, msg->content);
+
+	/* loop through each char until we hit a NULL */
 	for (int i = 0; newstr[i] != '\0'; i++) {
+		/* search for the opening '<@' that starts a mention */
 		if (newstr[i] == '<' && newstr[i+1] == '@') {
+			/* skip over the opening chars to index at the start of the ID */
 			index = i + 2;
+			/* rebase newstr to start at our found ID */
 			newstr = &newstr[index];
+			/* loop through the rest of newstr to make sure our supposed mention ends with > */
 			for (int x = 0; newstr[x] != '\0'; x++) {
 				if (newstr[x] == '>') {
+					/* if we get here then the mention is valid */
+					/* we overwrite the > mention terminator with a NULL so we can extract the ID */
 					newstr[x] = '\0';
 					break;
 				}
 			}
+			/* extract the ID into an int and were done */
 			ret = (u64snowflake)strtol(newstr, NULL, 10);
 		}
 	}
 	
-	ON_DEBUG printf("newstr: %s\n", newstr);
-	ON_DEBUG printf("ret: %" PRIu64 "\n", ret);
 	free(newstr_orig);
 	return ret;
 }
@@ -101,10 +110,32 @@ u64snowflake find_target(struct discord *client, const struct discord_message *m
 		snprintf(*target_mention, bufflen, "**<@%" PRIu64 ">**", target_id);	// handle direct mention
 	}
 	
-	ON_DEBUG printf("target_mention: %s\n", target_mention);
 	return target_id;
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-
+void handle_action(struct discord *client, const struct discord_message *msg,
+				   const char *response_self[], int response_self_len,
+				   const char *response[], int response_len) {
+	
+	int answer;
+	char final[_ACTION_MAX_LEN];
+	char tmp[_ACTION_MAX_LEN];
+	char target_mention[_TARGET_MAX_LEN];
+	u64snowflake target_id;
+	
+	/* run a parse for any targets in the message */
+	target_id = find_target(client, msg, &target_mention, sizeof(target_mention));
+	
+	if (msg->author->id == target_id || strlen(msg->content) == 0) {	// handle targeting self
+		answer = rand() % response_self_len;
+		snprintf(final, sizeof(final), "**<@%" PRIu64 ">** %s", msg->author->id, response_self[answer]);
+	} else {								// handle targeting a direct mention
+		answer = rand() % response_len;
+		snprintf(tmp, sizeof(tmp), "**<@%" PRIu64 ">** %s", msg->author->id, response[answer]);
+		snprintf(final, sizeof(final), tmp, target_mention);
+	}
+	
+	SEND_MSG_EMBED(final);
+}

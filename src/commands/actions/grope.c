@@ -40,7 +40,7 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
-#include <parse.h>
+#include <utils.h>
 #include <actions.h>
 
 // ----------------------------------------------------------------------------------------------------

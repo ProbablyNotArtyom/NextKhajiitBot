@@ -30,16 +30,19 @@ LIBS = -lpthread -ldiscord -lcurl
 SOURCES := $(shell find ./src -name '*.c')
 OBJECTS := $(foreach tmp, $(SOURCES:%.c=%.o), $(OBJDIR)/$(tmp))
 
-CFLAGS := $(LIBS) -I $(SRCDIR) -Wpedantic
+CFLAGS := $(LIBS) -I $(SRCDIR) -O3 -g
 LDFLAGS := -L /usr/lib -fwhole-program $(LIBS)
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 .PHONY: all clean test install uninstall
-all: clean
+all: 
 	mkdir -p $(BINDIR) $(OBJDIR)
 	$(MAKE) $(OBJECTS)
 	$(MAKE) $(BINARY_NAME)
+
+rebuild: clean
+	$(MAKE) all
 	
 .SECONDEXPANSION :
 $(BINARY_NAME): $(OBJECTS)

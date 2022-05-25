@@ -38,7 +38,7 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
-#include <parse.h>
+#include <utils.h>
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ void command_random(struct discord *client, const struct discord_message *msg) {
 	/* generate the random number and convert it into a string */
 	snprintf(strbuff, sizeof(strbuff), "**%d**", (rand() % (rand_max + 1)));
 	
-	SEND_MSG_EMBED(&strbuff);
+	SEND_MSG_EMBED(strbuff);
 }
 
 // ----------------------------------------------------------------------------------------------------

@@ -38,7 +38,7 @@
 
 #include <khajiitbot.h>
 #include <commands.h>
-#include <parse.h>
+#include <utils.h>
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -46,13 +46,13 @@
 #define HELP_ENTRY(cmd, desc)	"**" cmd "**\n" " ​ ​ ​ ​ ​ ​ ​ ​ " desc "\n"
 
 struct help_page {
-	const char *title;
-	const char *contents;
+	char *title;
+	char *contents;
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-const struct help_page help_meta = {
+static struct help_page help_meta = {
 	.title = "KhajiitBot Help Pages",
 	.contents = \
 		HELP_ENTRY("k.help general", "basic commands.")
@@ -62,7 +62,7 @@ const struct help_page help_meta = {
 		//HELP_ENTRY("k.help image", "commands that modify attached images.")
 };
 
-const struct help_page help_action = {
+static struct help_page help_action = {
 	.title = "Actions Help",
 	.contents = \
 		HELP_ENTRY("k.yiff @[user]", "​sends a yiffy message.")
@@ -80,7 +80,7 @@ const struct help_page help_action = {
 		HELP_ENTRY("k.boof @[user]", "rip da boof, or pass da boof to a fren.")
 };
 
-const struct help_page help_miscellaneous = {
+static struct help_page help_miscellaneous = {
 	.title = "Miscellaneous Commands Help",
 	.contents = \
 		HELP_ENTRY("k.e6 [tags]", "sets up a search for the specified tags on e621.")
@@ -89,7 +89,7 @@ const struct help_page help_miscellaneous = {
 		HELP_ENTRY("k.define [word]", "reports the definition, along with any possible synonyms of a word")
 };
 
-const struct help_page help_general = {
+static struct help_page help_general = {
 	.title = "General Commands Help",
 	.contents = \
 		HELP_ENTRY("k.help", "shows this help page.")
