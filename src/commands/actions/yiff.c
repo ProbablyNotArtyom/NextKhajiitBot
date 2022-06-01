@@ -65,6 +65,8 @@ const static char *yiff_response[] = {
 
 void action_yiff(struct discord *client, const struct discord_message *msg) {
 	if (msg->author->bot) return;	// ignore bots
+	
+	DEBUG_PRINTF("<> Yiffing...\n");
 	handle_action(client, msg, yiff_response_self, STR_ARRAY_LEN(yiff_response_self),
 		yiff_response, STR_ARRAY_LEN(yiff_response));
 }

@@ -49,6 +49,7 @@
 // If the returned ID is 0, then no mention was found
 // always returns the first mention in the message if multiple are present
 u64snowflake find_mention(struct discord *client, const struct discord_message *msg) {
+	DEBUG_PRINTF("<> Finding mention...\n");
 	if (strlen(msg->content) == 0) return 0;	// if the message is blank then dont bother parsing
 	
 	int index = 0;
@@ -92,7 +93,7 @@ u64snowflake find_mention(struct discord *client, const struct discord_message *
 u64snowflake find_target(struct discord *client, const struct discord_message *msg, char *target_mention[], size_t bufflen) {
 	/* attempt to parse a direct mention */
 	u64snowflake target_id = find_mention(client, msg);
-	
+	DEBUG_PRINTF("<> Finding target...\n");
 	if (target_id == 0 && strlen(msg->content) != 0) {	// handle string target
 
 		/* set up a query and search for any partial username matches */
@@ -102,14 +103,18 @@ u64snowflake find_target(struct discord *client, const struct discord_message *m
 		discord_search_guild_members(client, msg->guild_id, &params, &ret);
 		
 		if (members.size == 0) {
-			snprintf(*target_mention, bufflen, "**%s**", msg->content);			// if no matches were found, handle as a string target
+			DEBUG_PRINTF("<> String target\n");
+			snprintf(target_mention, bufflen, "**%s**", msg->content);			// if no matches were found, handle as a string target
 		} else {
-			snprintf(*target_mention, bufflen, "**<@%" PRIu64 ">**", members.array[0].user->id);	// otherwise, create a mention using the match
+			DEBUG_PRINTF("<> Matched target\n");
+			snprintf(target_mention, bufflen, "**<@%" PRIu64 ">**", members.array[0].user->id);	// otherwise, create a mention using the match
 		}
 	} else {
-		snprintf(*target_mention, bufflen, "**<@%" PRIu64 ">**", target_id);	// handle direct mention
+		DEBUG_PRINTF("<> Direct mention target\n");
+		snprintf(target_mention, bufflen, "**<@%" PRIu64 ">**", target_id);	// handle direct mention
 	}
 	
+	DEBUG_PRINTF("<> Returning\n");
 	return target_id;
 }
 
@@ -125,13 +130,17 @@ void handle_action(struct discord *client, const struct discord_message *msg,
 	char target_mention[_TARGET_MAX_LEN];
 	u64snowflake target_id;
 	
+	DEBUG_PRINTF("<> Handling action\n");
+	
 	/* run a parse for any targets in the message */
 	target_id = find_target(client, msg, &target_mention, sizeof(target_mention));
 	
 	if (msg->author->id == target_id || strlen(msg->content) == 0) {	// handle targeting self
+		DEBUG_PRINTF("<> Targeting self\n");
 		answer = rand() % response_self_len;
 		snprintf(final, sizeof(final), "**<@%" PRIu64 ">** %s", msg->author->id, response_self[answer]);
 	} else {								// handle targeting a direct mention
+		DEBUG_PRINTF("<> Handling direct mention\n");
 		answer = rand() % response_len;
 		snprintf(tmp, sizeof(tmp), "**<@%" PRIu64 ">** %s", msg->author->id, response[answer]);
 		snprintf(final, sizeof(final), tmp, target_mention);

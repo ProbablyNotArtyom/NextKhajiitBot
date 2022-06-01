@@ -57,7 +57,8 @@
 #define STR_ARRAY_LEN(a)		(sizeof(a) / sizeof(*a))
 #define STRUCT_ARRAY_LEN(a)		(sizeof(a) / sizeof(a[0]))
 
-#define ON_DEBUG				if (kbot_debug) 
+#define ON_DEBUG				if (kbot_debug)
+#define DEBUG_PRINTF(...)		if (kbot_debug) fprintf(stderr, __VA_ARGS__)
 #define CMD_IGNORE_BOTS(a)		if (msg->author->bot) return;	// use at start of cmd to ignore bots
 
 /* this monstrosity allows me to send a static embed in just one line */
@@ -91,7 +92,7 @@
 		}; \
 		discord_create_message(client, msg->channel_id, &params, NULL); \
 	}
-
+	
 // ----------------------------------------------------------------------------------------------------
 
 extern bool kbot_debug;

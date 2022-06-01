@@ -58,7 +58,7 @@ static struct help_page help_meta = {
 		HELP_ENTRY("k.help general", "basic commands.")
 		HELP_ENTRY("k.help action", "commands for peer interaction.")
 		//HELP_ENTRY("k.help pool", "commands that use the image pools, such as k.image.")
-		HELP_ENTRY("k.help misc", "miscellaneous commands, external website interfaces.")
+		//HELP_ENTRY("k.help misc", "miscellaneous commands, external website interfaces.")
 		//HELP_ENTRY("k.help image", "commands that modify attached images.")
 };
 
@@ -92,14 +92,14 @@ static struct help_page help_miscellaneous = {
 static struct help_page help_general = {
 	.title = "General Commands Help",
 	.contents = \
-		HELP_ENTRY("k.help", "shows this help page.")
-		HELP_ENTRY("k.uptime", "displays the current uptime.")
+		HELP_ENTRY("k.help [page]", "shows a help subpage. pass no subpage to show all pages")
+		//HELP_ENTRY("k.uptime", "displays the current uptime.")
 		HELP_ENTRY("k.random [max]", "generates a truly random number with max value. (default 10)")
 		HELP_ENTRY("k.8ball [question]", "answers any question with true randomness.")
 		HELP_ENTRY("k.rate @[user]", "rates another user on a scale from 0 to 10.")
 		HELP_ENTRY("k.chance [question]", "rates the likelihood a question is true.")
-		HELP_ENTRY("k.e [emote]", "returns the link to the emote image.")
-		HELP_ENTRY("k.a @[user]", "returns a link to the avatar of the user.")
+		//HELP_ENTRY("k.e [emote]", "returns the link to the emote image.")
+		//HELP_ENTRY("k.a @[user]", "returns a link to the avatar of the user.")
 };
 
 // ----------------------------------------------------------------------------------------------------
