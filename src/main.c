@@ -137,6 +137,9 @@ int main (int argc, char **argv) {
 	discord_set_on_command(client, "chance", &command_chance);
 	discord_set_on_command(client, "random", &command_random);
 	discord_set_on_command(client, "rate", &command_rate);
+	discord_set_on_command(client, "define", &command_define);
+	discord_set_on_command(client, "ctof", &command_ctof);
+	discord_set_on_command(client, "ftoc", &command_ftoc);
 
 	/* run the bot */
 	discord_run(client);

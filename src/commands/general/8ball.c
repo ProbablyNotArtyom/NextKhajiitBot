@@ -60,7 +60,7 @@ static struct eightball_entry eightball_phrases[] = {	// list of 8ball phrases/r
 	{ "Yes definitely.", EIGHTBALL_RESPONSE_POSITIVE },
 	{ "You may rely on it.", EIGHTBALL_RESPONSE_POSITIVE },
 	{ "As I see it, yes.", EIGHTBALL_RESPONSE_POSITIVE },
-	{ "Most likelby.", EIGHTBALL_RESPONSE_POSITIVE },
+	{ "Most likely.", EIGHTBALL_RESPONSE_POSITIVE },
 	{ "Outlook good.", EIGHTBALL_RESPONSE_POSITIVE },
 	{ "Yes.", EIGHTBALL_RESPONSE_POSITIVE },
 	{ "Signs Point to Yes.", EIGHTBALL_RESPONSE_POSITIVE },

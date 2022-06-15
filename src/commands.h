@@ -35,9 +35,12 @@
 void command_help(struct discord *client, const struct discord_message *msg);
 
 void command_eight_ball(struct discord *client, const struct discord_message *msg);
+void command_define(struct discord *client, const struct discord_message *msg);
 void command_chance(struct discord *client, const struct discord_message *msg);
 void command_random(struct discord *client, const struct discord_message *msg);
 void command_rate(struct discord *client, const struct discord_message *msg);
+void command_ctof(struct discord *client, const struct discord_message *msg);
+void command_ftoc(struct discord *client, const struct discord_message *msg);
 
 // ----------------------------------------------------------------------------------------------------
 
